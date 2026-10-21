@@ -1,0 +1,179 @@
+{
+  "annotations": {"list": []},
+  "description": "Calendar-month activity totals, cumulative progress, daily consistency, walking quality, and workouts.",
+  "editable": true,
+  "graphTooltip": 1,
+  "links": [
+    {"title": "Year view", "type": "link", "url": "/d/apple-health-year/health-year", "targetBlank": false},
+    {"title": "Week view", "type": "link", "url": "/d/apple-health-week/health-week", "targetBlank": false},
+    {"title": "Day view", "type": "link", "url": "/d/apple-health-day/health-day", "targetBlank": false},
+    {"title": "Workout details", "type": "link", "url": "/d/apple-health-workout/workout-details", "targetBlank": false},
+    {"title": "Sleep overview", "type": "link", "url": "/d/apple-health-sleep/sleep-overview", "targetBlank": false}
+  ],
+  "panels": [
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "green", "mode": "fixed"}, "decimals": 0, "unit": "locale"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT round(coalesce(sum(value),0))::bigint AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='step_count' AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Steps",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "blue", "mode": "fixed"}, "decimals": 1, "unit": "lengthmi"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 3, "y": 0},
+      "id": 8,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(sum(value),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='walking_running_distance' AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Miles",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "orange", "mode": "fixed"}, "decimals": 0, "unit": "kcal"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 6, "y": 0},
+      "id": 9,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(sum(value),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='active_energy' AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Active kcal",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "purple", "mode": "fixed"}, "decimals": 0, "unit": "m"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 9, "y": 0},
+      "id": 10,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(sum(value),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='apple_exercise_time' AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Exercise min",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "cyan", "mode": "fixed"}, "decimals": 0, "unit": "locale"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 12, "y": 0},
+      "id": 11,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT count(*) AS value FROM workouts WHERE user_id='$user_id'::uuid AND start_time>=('$month-01 00:00:00 $timezone')::timestamptz AND start_time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Workouts",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "yellow", "mode": "fixed"}, "decimals": 0, "unit": "m"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 15, "y": 0},
+      "id": 12,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(sum(coalesce(duration_seconds,extract(epoch FROM end_time-start_time)))/60,0) AS value FROM workouts WHERE user_id='$user_id'::uuid AND start_time>=('$month-01 00:00:00 $timezone')::timestamptz AND start_time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Workout min",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "light-blue", "mode": "fixed"}, "decimals": 0, "unit": "kcal"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 18, "y": 0},
+      "id": 14,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(sum(value),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='basal_energy_burned' AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Basal kcal",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "red", "mode": "fixed"}, "decimals": 0, "unit": "kcal"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 3, "x": 21, "y": 0},
+      "id": 15,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(sum(value),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric IN ('active_energy','basal_energy_burned') AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month');", "refId": "A"}],
+      "title": "Total kcal",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 45, "lineWidth": 1, "showPoints": "never"}, "unit": "locale"}, "overrides": [{"matcher": {"id": "byName", "options": "Running average"}, "properties": [{"id": "custom.drawStyle", "value": "line"}, {"id": "custom.lineWidth", "value": 3}, {"id": "custom.fillOpacity", "value": 0}]}]},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+      "id": 2,
+      "options": {"legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "WITH d AS (SELECT time_bucket_gapfill('1 day',time,timezone=>'$timezone') AS day,sum(value) AS steps FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='step_count' AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month') GROUP BY 1) SELECT day AS time,steps AS \"Daily steps\",avg(steps) OVER (ORDER BY day ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS \"Running average\" FROM d ORDER BY day;", "refId": "A"}],
+      "title": "Daily steps",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 10, "lineWidth": 2, "showPoints": "never"}}, "overrides": [{"matcher": {"id": "byName", "options": "Steps"}, "properties": [{"id": "unit", "value": "locale"}]}, {"matcher": {"id": "byName", "options": "Miles"}, "properties": [{"id": "unit", "value": "lengthmi"}, {"id": "custom.axisPlacement", "value": "right"}]}]},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+      "id": 3,
+      "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "WITH d AS (SELECT time_bucket_gapfill('1 day',time,timezone=>'$timezone') AS day,sum(value) FILTER (WHERE metric='step_count') AS steps,sum(value) FILTER (WHERE metric='walking_running_distance') AS miles FROM health_metrics WHERE user_id='$user_id'::uuid AND metric IN ('step_count','walking_running_distance') AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month') GROUP BY 1) SELECT day AS time,sum(coalesce(steps,0)) OVER (ORDER BY day ROWS UNBOUNDED PRECEDING) AS \"Steps\",sum(coalesce(miles,0)) OVER (ORDER BY day ROWS UNBOUNDED PRECEDING) AS \"Miles\" FROM d ORDER BY day;", "refId": "A"}],
+      "title": "Cumulative month progress",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 50, "lineWidth": 1, "showPoints": "never"}}, "overrides": [{"matcher": {"id": "byName", "options": "Active kcal"}, "properties": [{"id": "unit", "value": "kcal"}]}, {"matcher": {"id": "byName", "options": "Basal kcal"}, "properties": [{"id": "unit", "value": "kcal"}]}, {"matcher": {"id": "byName", "options": "Total kcal"}, "properties": [{"id": "unit", "value": "kcal"}, {"id": "custom.drawStyle", "value": "line"}, {"id": "custom.lineWidth", "value": 3}, {"id": "custom.fillOpacity", "value": 0}]}, {"matcher": {"id": "byName", "options": "Exercise min"}, "properties": [{"id": "unit", "value": "m"}, {"id": "custom.axisPlacement", "value": "right"}]}]},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+      "id": 4,
+      "options": {"legend": {"calcs": ["sum", "mean"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "SELECT time_bucket_gapfill('1 day',time,timezone=>'$timezone') AS time,sum(value) FILTER (WHERE metric='active_energy') AS \"Active kcal\",sum(value) FILTER (WHERE metric='basal_energy_burned') AS \"Basal kcal\",sum(value) FILTER (WHERE metric IN ('active_energy','basal_energy_burned')) AS \"Total kcal\",sum(value) FILTER (WHERE metric='apple_exercise_time') AS \"Exercise min\" FROM health_metrics WHERE user_id='$user_id'::uuid AND metric IN ('active_energy','basal_energy_burned','apple_exercise_time') AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month') GROUP BY 1 ORDER BY 1;", "refId": "A"}],
+      "title": "Daily energy expenditure and exercise",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+      "id": 5,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT date_trunc('day',time,'$timezone')::date AS \"Day\",round(avg(value) FILTER (WHERE metric='walking_speed')::numeric,2) AS \"Walking mph\",round(avg(value) FILTER (WHERE metric='walking_step_length')::numeric,1) AS \"Step length in\",round(avg(value) FILTER (WHERE metric='walking_double_support_percentage')::numeric,1) AS \"Double support %\",round(avg(value) FILTER (WHERE metric='walking_asymmetry_percentage')::numeric,1) AS \"Asymmetry %\",round(sum(value) FILTER (WHERE metric='flights_climbed')::numeric,1) AS \"Flights\" FROM health_metrics WHERE user_id='$user_id'::uuid AND metric IN ('walking_speed','walking_step_length','walking_double_support_percentage','walking_asymmetry_percentage','flights_climbed') AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month') GROUP BY 1 ORDER BY 1 DESC;", "refId": "A"}],
+      "title": "Walking quality by day",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Hydration recorded during the selected month. Bars represent the export buckets received from Apple Health, the solid line is the cumulative monthly total, and the dashed line marks the 128 fl oz (one US gallon) daily goal.",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 12, "lineWidth": 3, "showPoints": "auto"}, "decimals": 1, "unit": "suffix: fl oz"}, "overrides": [{"matcher": {"id": "byName", "options": "Recorded water"}, "properties": [{"id": "custom.drawStyle", "value": "bars"}, {"id": "custom.fillOpacity", "value": 55}, {"id": "custom.lineWidth", "value": 1}]}, {"matcher": {"id": "byName", "options": "1 gallon daily goal"}, "properties": [{"id": "color", "value": {"fixedColor": "yellow", "mode": "fixed"}}, {"id": "custom.lineStyle", "value": {"dash": [10, 10], "fill": "dash"}}, {"id": "custom.lineWidth", "value": 2}, {"id": "custom.fillOpacity", "value": 0}, {"id": "custom.showPoints", "value": "never"}]}]},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 22},
+      "id": 13,
+      "options": {"legend": {"calcs": ["sum", "lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "WITH hydration AS (SELECT time_bucket_gapfill('1 day',time,timezone=>'$timezone') AS day,coalesce(sum(value),0) AS ounces FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='dietary_water' AND unit='fl_oz_us' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month') GROUP BY 1) SELECT day AS time,ounces AS \"Recorded water\",sum(ounces) OVER (ORDER BY day ROWS UNBOUNDED PRECEDING) AS \"Cumulative water\",128.0 AS \"1 gallon daily goal\" FROM hydration ORDER BY day;", "refId": "A"}],
+      "title": "Water consumption",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 9, "w": 24, "x": 0, "y": 30},
+      "id": 6,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT start_time AT TIME ZONE '$timezone' AS \"Start\",replace(workout_type,'_',' ') AS \"Workout\",round((coalesce(duration_seconds,extract(epoch FROM end_time-start_time))/60)::numeric,1) AS \"Minutes\",round(active_energy_kcal::numeric,0) AS \"Active kcal\",round(distance_miles::numeric,2) AS \"Miles\",round(average_heart_rate_bpm::numeric,0) AS \"Avg HR\",round(effort_score::numeric,1) AS \"Effort\",CASE WHEN EXISTS (SELECT 1 FROM workout_routes r WHERE r.workout_id=w.id) THEN 'Yes' ELSE 'No' END AS \"Route\" FROM workouts w WHERE user_id='$user_id'::uuid AND start_time>=('$month-01 00:00:00 $timezone')::timestamptz AND start_time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month') ORDER BY start_time DESC;", "refId": "A"}],
+      "title": "Workouts this month",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 10, "w": 24, "x": 0, "y": 39},
+      "id": 7,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "WITH d AS (SELECT time_bucket_gapfill('1 day',time,timezone=>'$timezone') AS day,sum(value) FILTER (WHERE metric='step_count') AS steps,sum(value) FILTER (WHERE metric='walking_running_distance') AS miles,sum(value) FILTER (WHERE metric='active_energy') AS kcal,sum(value) FILTER (WHERE metric='apple_exercise_time') AS exercise FROM health_metrics WHERE user_id='$user_id'::uuid AND metric IN ('step_count','walking_running_distance','active_energy','apple_exercise_time') AND resolution='raw' AND time>=('$month-01 00:00:00 $timezone')::timestamptz AND time<(('$month-01 00:00:00 $timezone')::timestamptz+interval '1 month') GROUP BY 1) SELECT day::date AS \"Day\",round(steps)::bigint AS \"Steps\",round(sum(coalesce(steps,0)) OVER (ORDER BY day ROWS UNBOUNDED PRECEDING))::bigint AS \"Cum. steps\",round(miles::numeric,2) AS \"Miles\",round(sum(coalesce(miles,0)) OVER (ORDER BY day ROWS UNBOUNDED PRECEDING)::numeric,2) AS \"Cum. miles\",round(kcal::numeric) AS \"Active kcal\",round(sum(coalesce(kcal,0)) OVER (ORDER BY day ROWS UNBOUNDED PRECEDING)::numeric) AS \"Cum. kcal\",round(exercise::numeric) AS \"Exercise min\" FROM d ORDER BY day DESC;", "refId": "A"}],
+      "title": "Daily cumulative ledger",
+      "type": "table"
+    }
+  ],
+  "refresh": "30m",
+  "schemaVersion": 41,
+  "tags": ["apple-health", "health", "month"],
+  "templating": {"list": [
+    {"current": {}, "datasource": {"type": "postgres", "uid": "apple-health-postgres"}, "definition": "SELECT name AS __text,id::text AS __value FROM users ORDER BY name", "hide": 0, "includeAll": false, "label": "Person", "multi": false, "name": "user_id", "options": [], "query": "SELECT name AS __text,id::text AS __value FROM users ORDER BY name", "refresh": 1, "type": "query"},
+    {"current": {"selected": true, "text": "2026-10", "value": "2026-10"}, "datasource": {"type": "postgres", "uid": "apple-health-postgres"}, "definition": "SELECT DISTINCT to_char(d AT TIME ZONE 'America/New_York','YYYY-MM') AS __text,to_char(d AT TIME ZONE 'America/New_York','YYYY-MM') AS __value FROM (SELECT time d FROM health_metrics UNION ALL SELECT start_time FROM workouts) x ORDER BY __value DESC", "hide": 0, "includeAll": false, "label": "Month", "multi": false, "name": "month", "options": [], "query": "SELECT DISTINCT to_char(d AT TIME ZONE 'America/New_York','YYYY-MM') AS __text,to_char(d AT TIME ZONE 'America/New_York','YYYY-MM') AS __value FROM (SELECT time d FROM health_metrics UNION ALL SELECT start_time FROM workouts) x ORDER BY __value DESC", "refresh": 1, "type": "query"},
+    {"current": {"selected": true, "text": "America/New_York", "value": "America/New_York"}, "hide": 2, "label": "Timezone", "name": "timezone", "options": [{"selected": true, "text": "America/New_York", "value": "America/New_York"}], "query": "America/New_York", "type": "custom"}
+  ]},
+  "time": {"from": "now-30d", "to": "now"},
+  "timezone": "browser",
+  "title": "Health · Month",
+  "uid": "apple-health-month",
+  "version": 6
+}

@@ -1,0 +1,72 @@
+{
+  "workouts": [
+    {
+      "id": "workout-with-details",
+      "workoutActivityType": "Walking",
+      "startDate": "2000-01-04T12:00:00Z",
+      "endDate": "2000-01-04T12:10:00Z",
+      "duration": 600,
+      "source": {
+        "name": "Test Watch",
+        "identifier": "com.example.watch"
+      },
+      "location": "Outdoor",
+      "route": [
+        {
+          "timestamp": "2000-01-04T12:00:00Z",
+          "latitude": 0.0,
+          "longitude": 0.0,
+          "altitude": 0.0,
+          "speed": 1.0,
+          "speedAccuracy": 0.0
+        }
+      ],
+      "heartRateData": [
+        {
+          "date": "2000-01-04T12:05:00Z",
+          "Avg": 100,
+          "Min": 80,
+          "Max": 120,
+          "units": "bpm"
+        }
+      ],
+      "heartRateRecovery": [
+        {
+          "date": "2000-01-04T12:11:00Z",
+          "Avg": 90,
+          "Min": 80,
+          "Max": 100,
+          "units": "bpm"
+        }
+      ],
+      "stepCount": [
+        {
+          "date": "2000-01-04T12:05:00Z",
+          "qty": 100,
+          "units": "count"
+        }
+      ],
+      "segments": [
+        {
+          "start": "2000-01-04T12:00:00Z",
+          "end": "2000-01-04T12:05:00Z",
+          "activeDuration": 300,
+          "metrics": {"distance": {"qty": 500, "units": "m"}}
+        }
+      ],
+      "splits": [
+        {
+          "targetDistance": {"qty": 1, "units": "km"},
+          "items": [
+            {
+              "start": "2000-01-04T12:00:00Z",
+              "end": "2000-01-04T12:10:00Z",
+              "activeDuration": 600,
+              "metrics": {"speed": {"qty": 1.0, "units": "m/s"}}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

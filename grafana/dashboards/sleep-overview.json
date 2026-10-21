@@ -1,0 +1,178 @@
+{
+  "annotations": {"list": []},
+  "description": "Sleep duration, stages, consistency, balance, recovery, and next-day activity. Nights are assigned to their local wake-up date.",
+  "editable": true,
+  "graphTooltip": 1,
+  "links": [
+    {"title": "Year view", "type": "link", "url": "/d/apple-health-year/health-year", "targetBlank": false},
+    {"title": "Month view", "type": "link", "url": "/d/apple-health-month/health-month", "targetBlank": false},
+    {"title": "Day view", "type": "link", "url": "/d/apple-health-day/health-day", "targetBlank": false},
+    {"title": "Workout details", "type": "link", "url": "/d/apple-health-workout/workout-details", "targetBlank": false}
+  ],
+  "panels": [
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Nights whose wake-up time falls inside the selected time range.",
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "cyan", "mode": "fixed"}, "decimals": 0, "unit": "locale"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT count(*) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time);", "refId": "A"}],
+      "title": "Nights",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "blue", "mode": "fixed"}, "decimals": 2, "unit": "h"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 4, "y": 0},
+      "id": 10,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(avg(value),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time);", "refId": "A"}],
+      "title": "Average sleep",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "green", "mode": "fixed"}, "decimals": 1, "unit": "percent"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 8, "y": 0},
+      "id": 11,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "WITH n AS (SELECT value AS sleep_hours,extract(epoch FROM (coalesce(NULLIF(metadata_json->>'inBedEnd','')::timestamptz,end_time)-coalesce(NULLIF(metadata_json->>'inBedStart','')::timestamptz,time)))/3600 AS in_bed_hours FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time)) SELECT coalesce(avg(100*sleep_hours/NULLIF(in_bed_hours,0)),0) AS value FROM n;", "refId": "A"}],
+      "title": "Efficiency",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "purple", "mode": "fixed"}, "decimals": 2, "unit": "h"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 12, "y": 0},
+      "id": 12,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(avg(NULLIF(metadata_json->>'deep','')::double precision),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time);", "refId": "A"}],
+      "title": "Average deep",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "orange", "mode": "fixed"}, "decimals": 2, "unit": "h"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 16, "y": 0},
+      "id": 13,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(avg(NULLIF(metadata_json->>'rem','')::double precision),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time);", "refId": "A"}],
+      "title": "Average REM",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"fixedColor": "yellow", "mode": "fixed"}, "decimals": 2, "unit": "h"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 20, "y": 0},
+      "id": 14,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(avg(NULLIF(metadata_json->>'awake','')::double precision),0) AS value FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time);", "refId": "A"}],
+      "title": "Average awake",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 45, "lineWidth": 1, "showPoints": "never"}, "unit": "h"}, "overrides": [
+        {"matcher": {"id": "byName", "options": "7-night average"}, "properties": [{"id": "custom.drawStyle", "value": "line"}, {"id": "custom.lineWidth", "value": 3}, {"id": "custom.fillOpacity", "value": 0}]},
+        {"matcher": {"id": "byName", "options": "8-hour reference"}, "properties": [{"id": "custom.drawStyle", "value": "line"}, {"id": "custom.lineStyle", "value": {"dash": [8, 6], "fill": "dash"}}, {"id": "custom.fillOpacity", "value": 0}]}
+      ]},
+      "gridPos": {"h": 9, "w": 14, "x": 0, "y": 6},
+      "id": 2,
+      "options": {"legend": {"calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "WITH nightly AS (SELECT date_trunc('day',end_time,'$timezone') AS wake_day,sum(value) AS sleep_hours FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time) GROUP BY 1) SELECT wake_day AS time,sleep_hours AS \"Sleep duration\",avg(sleep_hours) OVER (ORDER BY wake_day ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS \"7-night average\",8::double precision AS \"8-hour reference\" FROM nightly ORDER BY wake_day;", "refId": "A"}],
+      "title": "Sleep duration trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Running difference from an eight-hour nightly reference. Negative values indicate accumulated shortfall for the selected range.",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "custom": {"drawStyle": "line", "fillOpacity": 18, "lineWidth": 2, "showPoints": "never"}, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 0}]}, "unit": "h"}, "overrides": []},
+      "gridPos": {"h": 9, "w": 10, "x": 14, "y": 6},
+      "id": 3,
+      "options": {"legend": {"calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "single"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "WITH nightly AS (SELECT date_trunc('day',end_time,'$timezone') AS wake_day,sum(value) AS sleep_hours FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time) GROUP BY 1) SELECT wake_day AS time,sum(sleep_hours-8) OVER (ORDER BY wake_day) AS \"Cumulative sleep balance\" FROM nightly ORDER BY wake_day;", "refId": "A"}],
+      "title": "Cumulative sleep balance",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "bars", "fillOpacity": 70, "lineWidth": 0, "showPoints": "never", "stacking": {"group": "stages", "mode": "normal"}}, "unit": "h"}, "overrides": []},
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 15},
+      "id": 4,
+      "options": {"legend": {"calcs": ["mean", "sum"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "SELECT date_trunc('day',end_time,'$timezone') AS time,sum(NULLIF(metadata_json->>'deep','')::double precision) AS \"Deep\",sum(NULLIF(metadata_json->>'core','')::double precision) AS \"Core\",sum(NULLIF(metadata_json->>'rem','')::double precision) AS \"REM\",sum(NULLIF(metadata_json->>'awake','')::double precision) AS \"Awake\" FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time) GROUP BY 1 ORDER BY 1;", "refId": "A"}],
+      "title": "Sleep stage composition",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Clock hour uses midnight = 24 so bedtime and wake time share a continuous overnight scale.",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 4, "lineWidth": 2, "showPoints": "always"}, "decimals": 2, "unit": "none"}, "overrides": []},
+      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 15},
+      "id": 5,
+      "options": {"legend": {"calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "WITH clocks AS (SELECT date_trunc('day',end_time,'$timezone') AS wake_day,extract(epoch FROM (time AT TIME ZONE '$timezone')::time)/3600 AS bed_hour,extract(epoch FROM (end_time AT TIME ZONE '$timezone')::time)/3600 AS wake_hour FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time)) SELECT wake_day AS time,CASE WHEN bed_hour<12 THEN bed_hour+24 ELSE bed_hour END AS \"Bedtime clock hour\",CASE WHEN wake_hour<12 THEN wake_hour+24 ELSE wake_hour END AS \"Wake clock hour\" FROM clocks ORDER BY wake_day;", "refId": "A"}],
+      "title": "Sleep schedule consistency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 5, "lineWidth": 2, "showPoints": "auto"}}, "overrides": [
+        {"matcher": {"id": "byName", "options": "Resting HR"}, "properties": [{"id": "unit", "value": "bpm"}]},
+        {"matcher": {"id": "byName", "options": "HRV"}, "properties": [{"id": "unit", "value": "ms"}, {"id": "custom.axisPlacement", "value": "right"}]},
+        {"matcher": {"id": "byName", "options": "Respiratory rate"}, "properties": [{"id": "unit", "value": "rpm"}]},
+        {"matcher": {"id": "byName", "options": "Wrist temperature"}, "properties": [{"id": "unit", "value": "fahrenheit"}, {"id": "custom.axisPlacement", "value": "right"}]}
+      ]},
+      "gridPos": {"h": 9, "w": 14, "x": 0, "y": 24},
+      "id": 6,
+      "options": {"legend": {"calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
+      "targets": [{"format": "time_series", "rawQuery": true, "rawSql": "WITH sleep_days AS (SELECT DISTINCT date_trunc('day',end_time,'$timezone') AS day FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time)),recovery AS (SELECT date_trunc('day',time,'$timezone') AS day,avg(value) FILTER (WHERE metric='resting_heart_rate') AS resting_hr,avg(value) FILTER (WHERE metric='heart_rate_variability') AS hrv,avg(value) FILTER (WHERE metric='respiratory_rate') AS respiratory,avg(value) FILTER (WHERE metric='apple_sleeping_wrist_temperature') AS wrist_temp FROM health_metrics WHERE user_id='$user_id'::uuid AND metric IN ('resting_heart_rate','heart_rate_variability','respiratory_rate','apple_sleeping_wrist_temperature') GROUP BY 1) SELECT s.day AS time,r.resting_hr AS \"Resting HR\",r.hrv AS \"HRV\",r.respiratory AS \"Respiratory rate\",r.wrist_temp AS \"Wrist temperature\" FROM sleep_days s LEFT JOIN recovery r USING(day) ORDER BY s.day;", "refId": "A"}],
+      "title": "Recovery markers on wake day",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 9, "w": 10, "x": 14, "y": 24},
+      "id": 7,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "WITH sleep AS (SELECT date_trunc('day',end_time,'$timezone')::date AS day,sum(value) AS sleep_hours FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time) GROUP BY 1),activity AS (SELECT date_trunc('day',time,'$timezone')::date AS day,sum(value) FILTER (WHERE metric='step_count') AS steps,sum(value) FILTER (WHERE metric='active_energy') AS kcal,sum(value) FILTER (WHERE metric='apple_exercise_time') AS exercise FROM health_metrics WHERE user_id='$user_id'::uuid AND metric IN ('step_count','active_energy','apple_exercise_time') GROUP BY 1) SELECT s.day AS \"Wake day\",round(s.sleep_hours::numeric,2) AS \"Sleep hr\",round(a.steps)::bigint AS \"Steps\",round(a.kcal::numeric) AS \"Active kcal\",round(a.exercise::numeric) AS \"Exercise min\" FROM sleep s LEFT JOIN activity a USING(day) ORDER BY s.day DESC;", "refId": "A"}],
+      "title": "Sleep and next-day activity",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 10, "w": 24, "x": 0, "y": 33},
+      "id": 8,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT (end_time AT TIME ZONE '$timezone')::date AS \"Wake date\",to_char(time AT TIME ZONE '$timezone','YYYY-MM-DD HH24:MI') AS \"Sleep start\",to_char(end_time AT TIME ZONE '$timezone','YYYY-MM-DD HH24:MI') AS \"Wake time\",round(value::numeric,2) AS \"Total sleep hr\",round((NULLIF(metadata_json->>'deep','')::numeric),2) AS \"Deep hr\",round((NULLIF(metadata_json->>'core','')::numeric),2) AS \"Core hr\",round((NULLIF(metadata_json->>'rem','')::numeric),2) AS \"REM hr\",round((NULLIF(metadata_json->>'awake','')::numeric),2) AS \"Awake hr\",round((100*value/NULLIF(extract(epoch FROM (coalesce(NULLIF(metadata_json->>'inBedEnd','')::timestamptz,end_time)-coalesce(NULLIF(metadata_json->>'inBedStart','')::timestamptz,time)))/3600,0))::numeric,1) AS \"Efficiency %\",source AS \"Source\" FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time) ORDER BY end_time DESC;", "refId": "A"}],
+      "title": "Nightly sleep ledger",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 9, "w": 24, "x": 0, "y": 43},
+      "id": 9,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT to_char(date_trunc('month',end_time,'$timezone'),'YYYY-MM') AS \"Month\",count(*) AS \"Nights\",round(avg(value)::numeric,2) AS \"Avg sleep hr\",round(min(value)::numeric,2) AS \"Shortest hr\",round(max(value)::numeric,2) AS \"Longest hr\",round(avg(NULLIF(metadata_json->>'deep','')::numeric),2) AS \"Avg deep hr\",round(avg(NULLIF(metadata_json->>'rem','')::numeric),2) AS \"Avg REM hr\",round(sum(value)::numeric,1) AS \"Total sleep hr\" FROM health_metrics WHERE user_id='$user_id'::uuid AND metric='sleep_analysis' AND $__timeFilter(end_time) GROUP BY 1 ORDER BY 1 DESC;", "refId": "A"}],
+      "title": "Monthly sleep summary",
+      "type": "table"
+    }
+  ],
+  "refresh": "30m",
+  "schemaVersion": 41,
+  "tags": ["apple-health", "health", "sleep"],
+  "templating": {"list": [
+    {"current": {}, "datasource": {"type": "postgres", "uid": "apple-health-postgres"}, "definition": "SELECT name AS __text,id::text AS __value FROM users ORDER BY name", "hide": 0, "includeAll": false, "label": "Person", "multi": false, "name": "user_id", "options": [], "query": "SELECT name AS __text,id::text AS __value FROM users ORDER BY name", "refresh": 1, "type": "query"},
+    {"current": {"selected": true, "text": "America/New_York", "value": "America/New_York"}, "hide": 2, "label": "Timezone", "name": "timezone", "options": [{"selected": true, "text": "America/New_York", "value": "America/New_York"}], "query": "America/New_York", "type": "custom"}
+  ]},
+  "time": {"from": "now-90d", "to": "now"},
+  "timepicker": {"hidden": false},
+  "timezone": "browser",
+  "title": "Sleep Overview",
+  "uid": "apple-health-sleep",
+  "version": 2
+}

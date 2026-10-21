@@ -1,0 +1,216 @@
+{
+  "annotations": {"list": []},
+  "description": "Workout summary, heart-rate overlays, recovery, route map, elevation, speed, splits, and nearby health readings.",
+  "editable": true,
+  "graphTooltip": 1,
+  "links": [
+    {"title": "Year view", "type": "link", "url": "/d/apple-health-year/health-year", "targetBlank": false},
+    {"title": "Month view", "type": "link", "url": "/d/apple-health-month/health-month", "targetBlank": false},
+    {"title": "Day view", "type": "link", "url": "/d/apple-health-day/health-day", "targetBlank": false},
+    {"title": "Sleep overview", "type": "link", "url": "/d/apple-health-sleep/sleep-overview", "targetBlank": false}
+  ],
+  "panels": [
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Workout duration.",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "decimals": 1, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}]}, "unit": "m"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT coalesce(duration_seconds,extract(epoch FROM end_time-start_time))/60 AS value FROM workouts WHERE id=NULLIF('$workout_id','')::uuid AND user_id='$user_id'::uuid;", "refId": "A"}],
+      "title": "Minutes",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Workout distance.",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "decimals": 2, "thresholds": {"mode": "absolute", "steps": [{"color": "blue", "value": null}]}, "unit": "lengthmi"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 4, "y": 0},
+      "id": 10,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT distance_miles AS value FROM workouts WHERE id=NULLIF('$workout_id','')::uuid AND user_id='$user_id'::uuid;", "refId": "A"}],
+      "title": "Miles",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Active energy burned during the workout.",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "orange", "value": null}]}, "unit": "kcal"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 8, "y": 0},
+      "id": 11,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT active_energy_kcal AS value FROM workouts WHERE id=NULLIF('$workout_id','')::uuid AND user_id='$user_id'::uuid;", "refId": "A"}],
+      "title": "Active kcal",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Average heart rate during the workout.",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}]}, "unit": "bpm"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 12, "y": 0},
+      "id": 12,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT average_heart_rate_bpm AS value FROM workouts WHERE id=NULLIF('$workout_id','')::uuid AND user_id='$user_id'::uuid;", "refId": "A"}],
+      "title": "Average HR",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Maximum heart rate during the workout.",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "decimals": 0, "thresholds": {"mode": "absolute", "steps": [{"color": "dark-red", "value": null}]}, "unit": "bpm"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 16, "y": 0},
+      "id": 13,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT max_heart_rate_bpm AS value FROM workouts WHERE id=NULLIF('$workout_id','')::uuid AND user_id='$user_id'::uuid;", "refId": "A"}],
+      "title": "Maximum HR",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Apple workout effort score.",
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "decimals": 1, "thresholds": {"mode": "absolute", "steps": [{"color": "purple", "value": null}]}, "unit": "none"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 4, "x": 20, "y": 0},
+      "id": 14,
+      "options": {"colorMode": "value", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "value", "wideLayout": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT effort_score AS value FROM workouts WHERE id=NULLIF('$workout_id','')::uuid AND user_id='$user_id'::uuid;", "refId": "A"}],
+      "title": "Effort",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "GPS route ordered by recorded sequence. This panel is empty for indoor workouts or exports without route data.",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 14, "w": 12, "x": 0, "y": 6},
+      "id": 2,
+      "options": {
+        "basemap": {"config": {}, "name": "Layer 0", "type": "default"},
+        "controls": {"mouseWheelZoom": true, "showAttribution": true, "showDebug": false, "showMeasure": true, "showScale": true, "showZoom": true},
+        "layers": [{"config": {"showLegend": true, "style": {"color": {"fixed": "dark-green"}, "opacity": 0.85, "size": {"fixed": 4}}}, "location": {"latitude": "latitude", "longitude": "longitude", "mode": "coords"}, "name": "Workout route", "type": "route"}],
+        "tooltip": {"mode": "details"},
+        "view": {
+          "allLayers": false,
+          "dashboardVariable": false,
+          "id": "fit",
+          "lastOnly": false,
+          "lat": 0,
+          "layer": "Workout route",
+          "lon": 0,
+          "noRepeat": false,
+          "padding": 10,
+          "zoom": 15
+        }
+      },
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT recorded_at AS time,latitude,longitude,sequence,altitude_meters,speed FROM workout_routes WHERE workout_id=NULLIF('$workout_id','')::uuid ORDER BY sequence;", "refId": "A"}],
+      "title": "Workout route",
+      "type": "geomap"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Heart rate plotted against elapsed workout minutes. This chart is independent of Grafana's global dashboard time range.",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 8, "lineInterpolation": "linear", "lineWidth": 2, "pointSize": 3, "showPoints": "never", "spanNulls": false}}, "overrides": [
+        {"matcher": {"id": "byName", "options": "Elapsed minutes"}, "properties": [{"id": "unit", "value": "m"}, {"id": "decimals", "value": 1}]},
+        {"matcher": {"id": "byName", "options": "Average HR"}, "properties": [{"id": "unit", "value": "bpm"}, {"id": "decimals", "value": 0}]},
+        {"matcher": {"id": "byName", "options": "Minimum HR"}, "properties": [{"id": "unit", "value": "bpm"}, {"id": "decimals", "value": 0}]},
+        {"matcher": {"id": "byName", "options": "Maximum HR"}, "properties": [{"id": "unit", "value": "bpm"}, {"id": "decimals", "value": 0}]}
+      ]},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 6},
+      "id": 3,
+      "options": {"legend": {"calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}, "xField": "Elapsed minutes"},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT round(greatest(0,extract(epoch FROM (s.time-w.start_time))/60)::numeric,2)::double precision AS \"Elapsed minutes\",max(s.value) FILTER (WHERE s.metric='heart_rate_average') AS \"Average HR\",max(s.value) FILTER (WHERE s.metric='heart_rate_minimum') AS \"Minimum HR\",max(s.value) FILTER (WHERE s.metric='heart_rate_maximum') AS \"Maximum HR\" FROM workout_samples s JOIN workouts w ON w.id=s.workout_id WHERE s.workout_id=NULLIF('$workout_id','')::uuid AND s.phase='workout' AND s.metric LIKE 'heart_rate_%' AND s.time>=w.start_time-interval '1 minute' AND s.time<=w.end_time+interval '1 minute' GROUP BY s.time,w.start_time ORDER BY 1;", "refId": "A"}],
+      "title": "Heart rate during workout",
+      "type": "trend"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Recovery heart rate plotted against minutes after the workout ended, independent of the global dashboard time range.",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 5, "lineInterpolation": "linear", "lineWidth": 2, "pointSize": 4, "showPoints": "always", "spanNulls": false}}, "overrides": [
+        {"matcher": {"id": "byName", "options": "Recovery minutes"}, "properties": [{"id": "unit", "value": "m"}, {"id": "decimals", "value": 1}]},
+        {"matcher": {"id": "byName", "options": "Recovery average"}, "properties": [{"id": "unit", "value": "bpm"}, {"id": "decimals", "value": 0}]},
+        {"matcher": {"id": "byName", "options": "Recovery minimum"}, "properties": [{"id": "unit", "value": "bpm"}, {"id": "decimals", "value": 0}]},
+        {"matcher": {"id": "byName", "options": "Recovery maximum"}, "properties": [{"id": "unit", "value": "bpm"}, {"id": "decimals", "value": 0}]}
+      ]},
+      "gridPos": {"h": 7, "w": 12, "x": 12, "y": 13},
+      "id": 4,
+      "options": {"legend": {"calcs": ["lastNotNull", "min", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}, "xField": "Recovery minutes"},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT round(greatest(0,extract(epoch FROM (s.time-w.end_time))/60)::numeric,2)::double precision AS \"Recovery minutes\",max(s.value) FILTER (WHERE s.metric='heart_rate_average') AS \"Recovery average\",max(s.value) FILTER (WHERE s.metric='heart_rate_minimum') AS \"Recovery minimum\",max(s.value) FILTER (WHERE s.metric='heart_rate_maximum') AS \"Recovery maximum\" FROM workout_samples s JOIN workouts w ON w.id=s.workout_id WHERE s.workout_id=NULLIF('$workout_id','')::uuid AND s.phase='recovery' AND s.metric LIKE 'heart_rate_%' GROUP BY s.time,w.end_time ORDER BY 1;", "refId": "A"}],
+      "title": "Heart-rate recovery",
+      "type": "trend"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Elevation and speed plotted against elapsed workout minutes, independent of the global dashboard time range.",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 8, "lineInterpolation": "linear", "lineWidth": 2, "pointSize": 3, "showPoints": "never", "spanNulls": false}}, "overrides": [
+        {"matcher": {"id": "byName", "options": "Elapsed minutes"}, "properties": [{"id": "unit", "value": "m"}, {"id": "decimals", "value": 1}]},
+        {"matcher": {"id": "byName", "options": "Altitude"}, "properties": [{"id": "unit", "value": "lengthm"}]},
+        {"matcher": {"id": "byName", "options": "Speed"}, "properties": [{"id": "unit", "value": "velocityms"}, {"id": "custom.axisPlacement", "value": "right"}]}
+      ]},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20},
+      "id": 5,
+      "options": {"legend": {"calcs": ["mean", "min", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}, "xField": "Elapsed minutes"},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT round(greatest(0,extract(epoch FROM (r.recorded_at-w.start_time))/60)::numeric,2)::double precision AS \"Elapsed minutes\",r.altitude_meters AS \"Altitude\",r.speed AS \"Speed\" FROM workout_routes r JOIN workouts w ON w.id=r.workout_id WHERE r.workout_id=NULLIF('$workout_id','')::uuid AND r.recorded_at>=w.start_time-interval '1 minute' AND r.recorded_at<=w.end_time+interval '1 minute' ORDER BY 1;", "refId": "A"}],
+      "title": "Route elevation and speed",
+      "type": "trend"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "description": "Workout samples plotted against elapsed minutes. Units differ, so use the tooltip and legend to compare timing and shape.",
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "custom": {"drawStyle": "line", "fillOpacity": 5, "lineInterpolation": "linear", "lineWidth": 2, "pointSize": 3, "showPoints": "never", "spanNulls": false}}, "overrides": [
+        {"matcher": {"id": "byName", "options": "Elapsed minutes"}, "properties": [{"id": "unit", "value": "m"}, {"id": "decimals", "value": 1}]},
+        {"matcher": {"id": "byName", "options": "Active energy"}, "properties": [{"id": "unit", "value": "kcal"}]},
+        {"matcher": {"id": "byName", "options": "Basal energy"}, "properties": [{"id": "unit", "value": "kcal"}]},
+        {"matcher": {"id": "byName", "options": "Step count"}, "properties": [{"id": "unit", "value": "short"}]},
+        {"matcher": {"id": "byName", "options": "Distance"}, "properties": [{"id": "unit", "value": "lengthmi"}]}
+      ]},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20},
+      "id": 6,
+      "options": {"legend": {"calcs": ["sum", "mean", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}, "xField": "Elapsed minutes"},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT round(greatest(0,extract(epoch FROM (s.time-w.start_time))/60)::numeric,2)::double precision AS \"Elapsed minutes\",max(s.value) FILTER (WHERE s.metric='active_energy') AS \"Active energy\",max(s.value) FILTER (WHERE s.metric='basal_energy') AS \"Basal energy\",max(s.value) FILTER (WHERE s.metric='step_count') AS \"Step count\",max(s.value) FILTER (WHERE s.metric='walking_running_distance') AS \"Distance\" FROM workout_samples s JOIN workouts w ON w.id=s.workout_id WHERE s.workout_id=NULLIF('$workout_id','')::uuid AND s.phase='workout' AND s.metric NOT LIKE 'heart_rate_%' AND s.time>=w.start_time-interval '1 minute' AND s.time<=w.end_time+interval '1 minute' GROUP BY s.time,w.start_time ORDER BY 1;", "refId": "A"}],
+      "title": "Workout metric overlay",
+      "type": "trend"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 9, "w": 14, "x": 0, "y": 28},
+      "id": 7,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT interval_type AS \"Type\",sequence+1 AS \"#\",start_time AT TIME ZONE '$timezone' AS \"Start\",round(coalesce(duration_seconds,extract(epoch FROM end_time-start_time))::numeric,1) AS \"Seconds\",coalesce(target_distance::text||' '||target_distance_unit,metrics_json#>>'{distance,qty}') AS \"Distance\",round(NULLIF(metrics_json#>>'{heartRateAverage,qty}','')::numeric,0) AS \"Avg HR\",round(NULLIF(metrics_json#>>'{heartRateMaximum,qty}','')::numeric,0) AS \"Max HR\",round(NULLIF(metrics_json#>>'{speed,qty}','')::numeric,2) AS \"Speed m/s\",round(NULLIF(metrics_json#>>'{paceMile,qty}','')::numeric,1) AS \"Pace sec/mi\",round(NULLIF(metrics_json#>>'{activeEnergy,qty}','')::numeric,1) AS \"Active kcal\" FROM workout_intervals WHERE workout_id=NULLIF('$workout_id','')::uuid ORDER BY interval_type,sequence;", "refId": "A"}],
+      "title": "Segments and splits",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 9, "w": 10, "x": 14, "y": 28},
+      "id": 8,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT replace(h.metric,'_',' ') AS \"Metric\",h.unit AS \"Unit\",count(*) AS \"Samples\",round(avg(h.value)::numeric,2) AS \"Average\",round(min(h.value)::numeric,2) AS \"Minimum\",round(max(h.value)::numeric,2) AS \"Maximum\" FROM health_metrics h JOIN workouts w ON w.id=NULLIF('$workout_id','')::uuid AND h.user_id=w.user_id AND h.time BETWEEN w.start_time AND w.end_time WHERE h.metric IN ('physical_effort','blood_oxygen_saturation','respiratory_rate','headphone_audio_exposure','walking_speed','walking_step_length') GROUP BY h.metric,h.unit ORDER BY h.metric;", "refId": "A"}],
+      "title": "Health metrics during workout",
+      "type": "table"
+    },
+    {
+      "datasource": {"type": "postgres", "uid": "apple-health-postgres"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 7, "w": 24, "x": 0, "y": 37},
+      "id": 9,
+      "options": {"cellHeight": "sm", "showHeader": true},
+      "targets": [{"format": "table", "rawQuery": true, "rawSql": "SELECT start_time AT TIME ZONE '$timezone' AS \"Started\",end_time AT TIME ZONE '$timezone' AS \"Ended\",source AS \"Source\",source_name AS \"Device/source name\",round(min_heart_rate_bpm::numeric) AS \"Min HR\",round(average_heart_rate_bpm::numeric) AS \"Avg HR\",round(max_heart_rate_bpm::numeric) AS \"Max HR\",(SELECT count(*) FROM workout_routes r WHERE r.workout_id=w.id) AS \"Route points\",(SELECT count(*) FROM workout_samples s WHERE s.workout_id=w.id) AS \"Metric samples\",(SELECT count(*) FROM workout_intervals i WHERE i.workout_id=w.id) AS \"Intervals\" FROM workouts w WHERE id=NULLIF('$workout_id','')::uuid AND user_id='$user_id'::uuid;", "refId": "A"}],
+      "title": "Workout record details",
+      "type": "table"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 41,
+  "tags": ["apple-health", "workout", "route"],
+  "templating": {"list": [
+    {"current": {}, "datasource": {"type": "postgres", "uid": "apple-health-postgres"}, "definition": "SELECT name AS __text,id::text AS __value FROM users ORDER BY name", "hide": 0, "includeAll": false, "label": "Person", "multi": false, "name": "user_id", "options": [], "query": "SELECT name AS __text,id::text AS __value FROM users ORDER BY name", "refresh": 1, "type": "query"},
+    {"current": {"selected": true, "text": "All", "value": "$__all"}, "datasource": {"type": "postgres", "uid": "apple-health-postgres"}, "definition": "SELECT DISTINCT replace(workout_type,'_',' ') AS __text,workout_type AS __value FROM workouts WHERE user_id='$user_id'::uuid ORDER BY __text", "hide": 0, "includeAll": true, "label": "Workout type", "multi": true, "name": "workout_type", "options": [], "query": "SELECT DISTINCT replace(workout_type,'_',' ') AS __text,workout_type AS __value FROM workouts WHERE user_id='$user_id'::uuid ORDER BY __text", "refresh": 1, "type": "query"},
+    {"current": {}, "datasource": {"type": "postgres", "uid": "apple-health-postgres"}, "definition": "SELECT to_char(start_time AT TIME ZONE 'America/New_York','YYYY-MM-DD HH24:MI')||' · '||replace(workout_type,'_',' ') AS __text,id::text AS __value FROM workouts WHERE user_id='$user_id'::uuid AND workout_type IN (${workout_type:sqlstring}) ORDER BY start_time DESC LIMIT 500", "hide": 0, "includeAll": false, "label": "Workout", "multi": false, "name": "workout_id", "options": [], "query": "SELECT to_char(start_time AT TIME ZONE 'America/New_York','YYYY-MM-DD HH24:MI')||' · '||replace(workout_type,'_',' ') AS __text,id::text AS __value FROM workouts WHERE user_id='$user_id'::uuid AND workout_type IN (${workout_type:sqlstring}) ORDER BY start_time DESC LIMIT 500", "refresh": 1, "type": "query"},
+    {"current": {"selected": true, "text": "America/New_York", "value": "America/New_York"}, "hide": 2, "label": "Timezone", "name": "timezone", "options": [{"selected": true, "text": "America/New_York", "value": "America/New_York"}], "query": "America/New_York", "type": "custom"}
+  ]},
+  "time": {"from": "now-6h", "to": "now"},
+  "timezone": "browser",
+  "title": "Workout Details",
+  "uid": "apple-health-workout",
+  "version": 10
+}

@@ -1,0 +1,44 @@
+{
+  "data": {
+    "metrics": [
+      {
+        "name": "active_energy",
+        "units": "kcal",
+        "data": [
+          {
+            "id": "energy-1",
+            "date": "2000-01-03T10:00:00Z",
+            "qty": 10,
+            "source": "Fixture Watch"
+          }
+        ]
+      }
+    ],
+    "workouts": [
+      {
+        "id": "fixture-walk-1",
+        "workoutActivityType": "Outdoor Walk",
+        "startDate": "2000-01-03T10:00:00Z",
+        "endDate": "2000-01-03T10:10:00Z",
+        "duration": 600,
+        "distance": {"qty": 0.25, "units": "mi"},
+        "source": {"name": "Fixture Watch", "identifier": "test.watch"},
+        "heartRate": {
+          "avg": {"qty": 100, "units": "bpm"},
+          "min": {"qty": 80, "units": "bpm"},
+          "max": {"qty": 120, "units": "bpm"}
+        },
+        "effortScore": {"qty": 1, "units": "count"},
+        "route": [
+          {
+            "timestamp": "2000-01-03T10:00:00Z",
+            "latitude": 0.0,
+            "longitude": 0.0,
+            "altitude": 0.0,
+            "speed": 1.0
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "metrics": [
+    {
+      "name": "heart_rate",
+      "units": "count/min",
+      "data": [
+        {
+          "id": "heart-rate-1",
+          "date": "2000-01-02T10:00:00Z",
+          "qty": 60,
+          "source": "Fixture Watch",
+          "device": "Fixture Device"
+        }
+      ]
+    },
+    {
+      "name": "step_count",
+      "units": "count",
+      "data": [
+        {
+          "id": "steps-1",
+          "date": "2000-01-02T11:00:00Z",
+          "qty": 100,
+          "source": "Fixture Phone"
+        }
+      ]
+    },
+    {
+      "name": "sleep_analysis",
+      "units": "hr",
+      "data": [
+        {
+          "source": "Fixture Watch",
+          "date": "2000-01-02 00:00:00 +0000",
+          "sleepStart": "2000-01-01 22:00:00 +0000",
+          "sleepEnd": "2000-01-02 04:00:00 +0000",
+          "inBedStart": "2000-01-01 22:00:00 +0000",
+          "inBedEnd": "2000-01-02 04:00:00 +0000",
+          "totalSleep": 6.0,
+          "awake": 0.0,
+          "core": 3.0,
+          "deep": 1.0,
+          "rem": 2.0
+        }
+      ]
+    }
+  ]
+}

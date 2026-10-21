@@ -1,0 +1,20 @@
+target-version = "py312"
+line-length = 88
+src = ["."]
+
+[lint]
+extend-select = [
+    "I",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+]
+ignore = ["B008", "FURB162", "UP017"]
+
+[format]
+docstring-code-format = true
