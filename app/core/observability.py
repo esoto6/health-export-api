@@ -164,7 +164,8 @@ def configure_observability(app) -> None:
         app,
         tracer_provider=tracer_provider,
         meter_provider=meter_provider,
-        excluded_urls="health",
+        # Match the complete health-check URL, not "health" in hosts or routes.
+        excluded_urls=r"^https?://[^/]+/health(?:\?.*)?$",
     )
 
     log_event(

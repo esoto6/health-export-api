@@ -4,7 +4,9 @@ import json
 import logging
 from unittest.mock import MagicMock
 
+import pytest
 from fastapi import FastAPI
+from opentelemetry.util.http import parse_excluded_urls
 
 from app.core import observability
 from app.core.observability import JsonConsoleFormatter, log_event
@@ -74,8 +76,21 @@ def test_log_event_attaches_structured_fields():
     )
 
 
-def test_configure_observability_without_exporter(monkeypatch):
-    """Verify local instrumentation works without an OTLP exporter."""
+@pytest.mark.parametrize(
+    ("url", "excluded"),
+    [
+        ("http://127.0.0.1:8000/health", True),
+        ("https://health.rubberduckops.com/health", True),
+        ("https://health.rubberduckops.com/health?ready=1", True),
+        ("http://192.168.1.82:8000/api/v1/ingest/auto-health-export", False),
+        ("https://health.rubberduckops.com/api/v1/ingest/auto-health-export", False),
+        ("https://health.rubberduckops.com/api/v1/metrics", False),
+        ("http://127.0.0.1:8000/healthcheck", False),
+        ("http://127.0.0.1:8000/health/details", False),
+    ],
+)
+def test_configure_observability_without_exporter(monkeypatch, url, excluded):
+    """Exclude only the health endpoint, never ingestion or health hostnames."""
 
     tracer_provider = MagicMock()
     meter_provider = MagicMock()
@@ -107,6 +122,10 @@ def test_configure_observability_without_exporter(monkeypatch):
     logger_provider.add_log_record_processor.assert_not_called()
     instrument_fastapi.assert_called_once()
     instrument_logging.assert_called_once_with(inject_trace_context=True)
+    exclusions = parse_excluded_urls(
+        instrument_fastapi.call_args.kwargs["excluded_urls"]
+    )
+    assert exclusions.url_disabled(url) is excluded
 
 
 def test_configure_observability_builds_otlp_endpoints(monkeypatch):
